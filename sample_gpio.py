@@ -4,6 +4,7 @@ import time
 
 def main():
     GPIO.setmode(GPIO.BOARD)
+    #7番PIN（GPIO 4）を使用する
     GPIO.setup(7, GPIO.OUT)
 
     GPIO.output(7, True)
