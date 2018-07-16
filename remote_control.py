@@ -1,21 +1,16 @@
+import configparser
 import time
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
-CLIENT_ID = "test_client_id"
-ENDPOINT = "xxxxxxx.iot.ap-northeast-1.amazonaws.com"
-PORT = 8883
-
-ROOT_CA = "./cert/root_ca.pem"
-PRIVATE_KEY = "./cert/private.pem.key"
-CERTIFICATE = "./cert/certificate.pem.crt.txt"
-
-TOPIC = "raspberry_pi/test"
 
 def main():
+    (root_ca, private_key, certificate,
+        client_id, endpoint, port, topic) = parse_config_file()
+
     # https://s3.amazonaws.com/aws-iot-device-sdk-python-docs/sphinx/html/index.html
-    client = AWSIoTMQTTClient(CLIENT_ID)
-    client.configureEndpoint(ENDPOINT, PORT)
-    client.configureCredentials(ROOT_CA, PRIVATE_KEY, CERTIFICATE)
+    client = AWSIoTMQTTClient(client_id)
+    client.configureEndpoint(endpoint, port)
+    client.configureCredentials(root_ca, private_key, certificate)
 
     client.configureAutoReconnectBackoffTime(1, 32, 20)
     client.configureOfflinePublishQueueing(-1)
@@ -24,10 +19,24 @@ def main():
     client.configureMQTTOperationTimeout(5)
 
     client.connect()
-    client.subscribe(TOPIC, 1, subscribe_callback)
+    client.subscribe(topic, 1, subscribe_callback)
 
     while True:
         time.sleep(5)
+
+def parse_config_file():
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+
+    return (
+        config["AWS_IOT_CONNECT"]["ROOT_CA"],
+        config["AWS_IOT_CONNECT"]["PRIVATE_KEY"],
+        config["AWS_IOT_CONNECT"]["CERTIFICATE"],
+        config["AWS_IOT_CORE"]["CLIENT_ID"],
+        config["AWS_IOT_CORE"]["ENDPOINT"],
+        int(config["AWS_IOT_CORE"]["PORT"]),
+        config["AWS_IOT_CORE"]["TOPIC"]
+    )
 
 def subscribe_callback(client, userdata, message):
     print("Received a new message: ")
