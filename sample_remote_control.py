@@ -1,10 +1,15 @@
 import configparser
 import time
 import json
+import RPi.GPIO as GPIO
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
+#Use PIN 7 (GPIO 4)
+GPIO_AIRCON_PIN = 7
 
 def main():
+    init_gpio()
+
     (root_ca, private_key, certificate,
         client_id, endpoint, port, topic) = parse_config_file()
 
@@ -24,6 +29,10 @@ def main():
 
     while True:
         time.sleep(5)
+
+def init_gpio():
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(GPIO_AIRCON_PIN, GPIO.OUT)
 
 def parse_config_file():
     config = configparser.ConfigParser()
