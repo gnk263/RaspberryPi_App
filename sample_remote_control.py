@@ -68,6 +68,8 @@ def subscribe_callback(client, userdata, message):
     params = parse_payload(message.payload.decode(encoding="utf-8"))
     print(json.dumps(params, indent=4))
 
+    remote_control(params)
+
     print("--------------\n\n")
 
 def parse_payload(payload):
@@ -77,6 +79,17 @@ def parse_payload(payload):
         (key, value) = item.split("=")
         params[key] = value
     return params
+
+def remote_control(params):
+    if params["text"] == "aircon":
+        print("Execute GPIO_AIRCON_PIN")
+        execute(GPIO_AIRCON_PIN)
+
+def execute(pin_no):
+    GPIO.output(pin_no, True)
+    time.sleep(0.5)
+    GPIO.output(pin_no, False)
+    time.sleep(0.5)
 
 def is_finish():
     if os.path.isfile(FINISH_FILE):
