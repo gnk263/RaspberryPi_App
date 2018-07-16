@@ -1,3 +1,4 @@
+import os
 import configparser
 import time
 import json
@@ -6,6 +7,10 @@ from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
 #Use PIN 7 (GPIO 4)
 GPIO_AIRCON_PIN = 7
+
+#programme finish trigger file
+FINISH_FILE = "finish.txt"
+
 
 def main():
     init_gpio()
@@ -29,6 +34,12 @@ def main():
 
     while True:
         time.sleep(5)
+
+        if is_finish():
+            os.remove(FINISH_FILE)
+            GPIO.cleanup()
+            print("Finish remote controller")
+            break
 
 def init_gpio():
     GPIO.setmode(GPIO.BOARD)
@@ -66,6 +77,11 @@ def parse_payload(payload):
         (key, value) = item.split("=")
         params[key] = value
     return params
+
+def is_finish():
+    if os.path.isfile(FINISH_FILE):
+        return True
+    return False
 
 if __name__ == "__main__":
     main()
