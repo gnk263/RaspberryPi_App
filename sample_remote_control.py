@@ -43,7 +43,7 @@ def main():
 
 def init_gpio():
     GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(GPIO_AIRCON_PIN, GPIO.OUT)
+    GPIO.setup(GPIO_AIRCON_PIN, GPIO.OUT, initial=GPIO.HIGH)
 
 def parse_config_file():
     config = configparser.ConfigParser()
