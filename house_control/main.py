@@ -4,7 +4,7 @@ import time
 import json
 import RPi.GPIO as GPIO
 import logging
-from logging import getLogger, StreamHandler, Formatter, FileHandler
+from logging import getLogger, Formatter, FileHandler
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
 #Use PIN 7 (GPIO 4)
