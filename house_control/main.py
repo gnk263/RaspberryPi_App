@@ -3,6 +3,8 @@ import configparser
 import time
 import json
 import RPi.GPIO as GPIO
+import logging
+from logging import getLogger, StreamHandler, Formatter, FileHandler
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
 #Use PIN 7 (GPIO 4)
@@ -11,8 +13,21 @@ GPIO_AIRCON_PIN = 7
 #programme finish trigger file
 FINISH_FILE = "finish.txt"
 
+#logger setting
+handler_format = Formatter("[%(asctime)s][%(name)s][%(levelname)s] %(message)s")
+
+file_handler = FileHandler("house_control.log", "a")
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(handler_format)
+
+logger = getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.addHandler(file_handler)
+
 
 def main():
+    logger.info("Start house controller")
+
     init_gpio()
 
     (root_ca, private_key, certificate,
@@ -38,7 +53,7 @@ def main():
         if is_finish():
             os.remove(FINISH_FILE)
             GPIO.cleanup()
-            print("Finish remote controller")
+            logger.info("Finish house controller")
             break
 
 def init_gpio():
@@ -60,17 +75,15 @@ def parse_config_file():
     )
 
 def subscribe_callback(client, userdata, message):
-    print("Received a new message: ")
-    print(message.payload)
-    print("from topic: ")
-    print(message.topic)
+    logger.info("Received a new message: ")
+    logger.info(message.payload)
+    logger.info("from topic: ")
+    logger.info(message.topic)
 
     params = parse_payload(message.payload.decode(encoding="utf-8"))
-    print(json.dumps(params, indent=4))
+    logger.info(json.dumps(params, indent=4))
 
     remote_control(params)
-
-    print("--------------\n\n")
 
 def parse_payload(payload):
     params = {}
@@ -82,7 +95,7 @@ def parse_payload(payload):
 
 def remote_control(params):
     if params["text"] == "aircon":
-        print("Execute GPIO_AIRCON_PIN")
+        logger.info("Execute GPIO_AIRCON_PIN")
         execute(GPIO_AIRCON_PIN)
 
 def execute(pin_no):
