@@ -1,5 +1,5 @@
 import unittest
-import parser
+import parse_payload
 
 class TestParser(unittest.TestCase):
     pass

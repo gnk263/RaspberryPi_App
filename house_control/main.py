@@ -4,7 +4,7 @@ import time
 import json
 import RPi.GPIO as GPIO
 import logging
-import parser
+import parse_payload
 from logging import getLogger, Formatter, FileHandler
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
@@ -81,7 +81,7 @@ def subscribe_callback(client, userdata, message):
     logger.info("from topic: ")
     logger.info(message.topic)
 
-    params = parser.parse_payload(message.payload.decode(encoding="utf-8"))
+    params = parse_payload.parse_payload(message.payload.decode(encoding="utf-8"))
     logger.info(json.dumps(params, indent=4))
 
     remote_control(params)
