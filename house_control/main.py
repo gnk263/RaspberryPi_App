@@ -81,7 +81,7 @@ def subscribe_callback(client, userdata, message):
     logger.info("from topic: ")
     logger.info(message.topic)
 
-    params = parse_payload.parse_payload(message.payload.decode(encoding="utf-8"))
+    params = parse_payload.parse(message.payload.decode(encoding="utf-8"))
     logger.info(json.dumps(params, indent=4))
 
     remote_control(params)

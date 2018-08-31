@@ -1,5 +1,5 @@
 
-def parse_payload(payload):
+def parse(payload):
     params = {}
     key_value_list = payload.split("&")
     for item in key_value_list:
