@@ -87,7 +87,7 @@ def subscribe_callback(client, userdata, message):
     remote_control(params)
 
 def remote_control(params):
-    if params["text"] == "aircon":
+    if is_aircon_on(params):
         logger.info("Execute GPIO_AIRCON_PIN")
         execute(GPIO_AIRCON_PIN)
 
@@ -101,6 +101,15 @@ def is_finish():
     if os.path.isfile(FINISH_FILE):
         return True
     return False
+
+
+def is_aircon_on(params):
+    if params["command"] == "/control" and params["param"] == "aircon":
+        return True
+    if params["command"] == "ask_aircon" and params["param"] == "yes":
+        return True
+    return False
+
 
 if __name__ == "__main__":
     main()
