@@ -12,9 +12,9 @@ class TestParser(unittest.TestCase):
             "channel_name": "eeeeeeeeeeee",
             "user_id": "fffffffff",
             "user_name": "ggg",
-            "command": "%2Fcontrol",
+            "command": "/control",
             "text": "aircon",
-            "response_url": "https%3A%2F%2Fhooks.slack.com%2Fcommands%2Fhhhhhhhhh%2Fiiiiiiiiiiii%2Fjjjjjjjjjjjjjjjjjjjjjjjj"
+            "response_url": "https://hooks.slack.com/commands/hhhhhhhhh/iiiiiiiiiiii/jjjjjjjjjjjjjjjjjjjjjjjj"
         }
         params = parse_payload.parse(payload)
         self.assertDictEqual(expected, params)
