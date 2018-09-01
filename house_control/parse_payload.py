@@ -6,9 +6,19 @@ def parse(payload):
     format_type = _check_format(payload)
 
     if format_type == "slash_commands":
-        return _parse_slash_commands(payload)
+        data = _parse_slash_commands(payload)
+        return {
+            "command": data["command"],
+            "param": data["text"],
+            "data": data
+        }
     elif format_type == "interactive_message":
-        return _parse_interactive_message(payload)
+        data = _parse_interactive_message(payload)
+        return {
+            "command": data["callback_id"],
+            "param": data["actions"][0]["value"],
+            "data": data
+        }
     else:
         return {}
 
