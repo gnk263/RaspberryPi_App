@@ -1,3 +1,4 @@
+import json
 import urllib.parse as url_parse
 
 
@@ -30,4 +31,6 @@ def _parse_slash_commands(payload):
 
 
 def _parse_interactive_message(payload):
-    pass
+    data = url_parse.unquote(payload.decode(encoding="utf-8")).lstrip("payload=")
+    return json.loads(data)
+
