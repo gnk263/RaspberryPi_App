@@ -6,6 +6,10 @@ def parse(payload):
 
     if format_type == "slash_commands":
         return _parse_slash_commands(payload)
+    elif format_type == "interactive_message":
+        return _parse_interactive_message(payload)
+    else:
+        return {}
 
 
 def _check_format(payload):
@@ -23,3 +27,7 @@ def _parse_slash_commands(payload):
         (key, value) = item.split("=")
         params[key] = value
     return params
+
+
+def _parse_interactive_message(payload):
+    pass
